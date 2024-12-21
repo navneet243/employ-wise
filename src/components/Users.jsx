@@ -1,11 +1,10 @@
-import React, {useState, useContext} from 'react'
+import React, {useContext} from 'react'
 import {useNavigate} from 'react-router-dom'
 import { UsersContext } from '../utils/UserContext';
 import { AuthContext } from '../utils/AuthContext';
 
 const Users = () => {
-    const [error, setError] = useState('');
-    const {users, currentPage, setCurrentPage, totalPages, deleteUser} = useContext(UsersContext);
+    const {users, currentPage, setCurrentPage, totalPages, deleteUser, error, setError} = useContext(UsersContext);
     const {token, logout} = useContext(AuthContext);
     const Navigate = useNavigate();
 

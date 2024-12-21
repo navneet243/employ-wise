@@ -17,6 +17,7 @@ const EditUser = () => {
     getUser(id);
   }, [id]);
 
+  //fetching user data by id to update it
   const getUser = async (id) => {
     try {
       const token = localStorage.getItem('token')
@@ -34,6 +35,7 @@ const EditUser = () => {
     }
   };
 
+  // updating the user's data
   const handleUpdate = async (e) => {
     e.preventDefault();
     setError('');
