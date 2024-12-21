@@ -37,8 +37,3 @@ Follow these steps to set up the project locally:
     ```bash 
     npm start
 5. Open your browser and navigate to: [http://localhost:3000](http://localhost:3000)
-
-## Credentials
-Email - (eve.holt@reqres.in)
-
-Password - cityslicka
