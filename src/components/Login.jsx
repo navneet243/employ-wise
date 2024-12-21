@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../utils/AuthContext';
 
-const Login = () => {
+const Login = ({setIsLogin}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const {login} = useContext(AuthContext);
 
   const Navigate = useNavigate();
 
@@ -33,7 +35,7 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('token', data.token);
+        login(data.token);
         Navigate('/users');
       } else {
         const errorData = await response.json();
@@ -45,7 +47,7 @@ const Login = () => {
   };
 
   return (
-    <div className='mx-auto w-6/12 mt-32 p-8 bg-blue-200 rounded-md shadow-md'>   
+    <div className='mx-auto w-6/12 mt-24 flex flex-col items-center p-8 bg-blue-200 rounded-md shadow-md max-w-md'>   
         <div>
             <h1 className='text-center text-bold text-3xl p-2'>Login</h1>
         </div>
@@ -67,7 +69,7 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
                 <button className='mt-9 p-2 font-semibold rounded-md w-full bg-blue-300 hover:bg-blue-400'>Login</button>
             </form>
         </div>

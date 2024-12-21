@@ -1,57 +1,45 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useContext} from 'react'
 import {useNavigate} from 'react-router-dom'
+import { UsersContext } from '../utils/UserContext';
+import { AuthContext } from '../utils/AuthContext';
 
 const Users = () => {
-    const [users, setUsers] = useState([]);
-    const [totalPages, setTotalPages] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
     const [error, setError] = useState('');
-
+    const {users, currentPage, setCurrentPage, totalPages, deleteUser} = useContext(UsersContext);
+    const {token, logout} = useContext(AuthContext);
     const Navigate = useNavigate();
 
-    useEffect(() => {
-        getUsers(currentPage);
-    }, [currentPage]);
-
-    const getUsers = async (page) => {
-        try {
-            const response = await fetch(`https://reqres.in/api/users?page=${page}`);
-            if (response.ok) {
-                const data = await response.json();
-                setUsers(data.data);
-                setCurrentPage(data.page);
-                setTotalPages(data.total_pages);
-                // console.log(data.data);
-            }
-        } catch (err) {
-            setError('Error fetching users', err);
-        }
-    };
-
+    // handle the user Edit, redirects to Edit-user page
     const handleEdit = (id) => {
         Navigate(`/edit-user/${id}`);
     }
 
+    // delete the user from the list
     const handleDelete = async (id) => {
         try {
             const response = await fetch(`https://reqres.in/api/users/${id}`, {
                 method: 'DELETE',
             });
             if (response.ok) {
-                setUsers(users.filter((user) => user.id !== id));
-                alert('User deleted successfully');
+                deleteUser(id);
             }
         } catch (err) {
-        setError('Error deleting user', err);
+            setError(`Error deleting user: ${err.message}`);
         }
+    }
+
+    // Logout the user when Logout button is clicked
+    const logoutSubmit =() => {
+        logout();
+        Navigate('/')
     }
     
   return (
     <div className='mx-auto w-7/12 mt-10 p-8 rounded-md shadow-md'>
         {error && <p className='text-center font-bold text-red-400 mb-5 '>{error}</p>}
-        
-        <div className='rounded shadow'>
-            <h1 className='text-center text-bold text-3xl p-5 mb-3'>Users List</h1>
+        <div className='rounded shadow flex flex-wrap justify-between'>
+            <h1 className='m-5 text-3xl font-semibold'>Users List</h1>
+            {token && <button onClick={logoutSubmit} className='m-5 bg-gray-200 p-2 rounded-lg hover:bg-slate-300'>Logout</button>}
         </div>
         <div className='mt-2'>
             {
@@ -62,15 +50,15 @@ const Users = () => {
                         </div>
                         <div className='h-24 m-2'>
                             <h1 className='text-base'>{user.first_name} {user.last_name}</h1>
-                            <h1>{user.email}</h1>
+                            <h1 className='text-sm sm:text-base'>{user.email}</h1>
                             <button 
-                                className='py-1 px-1 mt-2 bg-gray-200 rounded-lg'
+                                className='py-1 px-1 mt-2 bg-gray-200 rounded-lg hover:bg-slate-300'
                                 onClick={() => handleEdit(user.id)}
                             >
                                 Edit
                             </button>
                             <button 
-                                className='py-1 px-1 mt-2 ml-3 bg-gray-200 rounded-lg'
+                                className='py-1 px-1 mt-2 ml-3 bg-gray-200 rounded-lg hover:bg-slate-300'
                                 onClick={() => handleDelete(user.id)}
                             >
                                 Delete
